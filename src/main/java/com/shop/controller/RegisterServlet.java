@@ -41,7 +41,7 @@ public class RegisterServlet extends HttpServlet {
             doGet(request, response);
         } catch (Exception e) {
             LOGGER.error("Registration failed", e);
-            request.setAttribute("error", "Не удалось выполнить регистрацию. Проверьте данные и попробуйте снова.");
+            request.setAttribute("error", "Registration failed. Please check your data and try again.");
             doGet(request, response);
         }
     }

@@ -29,7 +29,7 @@ public class ProductServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/products.jsp").forward(request, response);
         } catch (Exception e) {
             LOGGER.error("Failed to load products", e);
-            request.setAttribute("error", "Не удалось загрузить товары.");
+            request.setAttribute("error", "Failed to load products.");
             request.getRequestDispatcher("/WEB-INF/views/products.jsp").forward(request, response);
         }
     }
@@ -47,9 +47,9 @@ public class ProductServlet extends HttpServlet {
                         parseQuantity(request.getParameter("quantity"))
                 );
             } else if ("delete".equals(action)) {
-                productService.delete(parseLong(request.getParameter("id"), "Некорректный ID товара"));
+                productService.delete(parseLong(request.getParameter("id"), "Invalid product ID"));
             } else {
-                throw new IllegalArgumentException("Неизвестная операция");
+                throw new IllegalArgumentException("Unknown operation");
             }
             response.sendRedirect(request.getContextPath() + "/products");
         } catch (IllegalArgumentException e) {
@@ -57,7 +57,7 @@ public class ProductServlet extends HttpServlet {
             doGet(request, response);
         } catch (Exception e) {
             LOGGER.error("Product operation failed: {}", action, e);
-            request.setAttribute("error", "Операция с товаром не выполнена.");
+            request.setAttribute("error", "Product operation failed.");
             doGet(request, response);
         }
     }
@@ -66,7 +66,7 @@ public class ProductServlet extends HttpServlet {
         try {
             return new BigDecimal(value);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Цена должна быть корректным числом");
+            throw new IllegalArgumentException("Price must be a valid number");
         }
     }
 
@@ -74,7 +74,7 @@ public class ProductServlet extends HttpServlet {
         try {
             return Integer.parseInt(value);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Количество должно быть целым числом");
+            throw new IllegalArgumentException("Quantity must be an integer");
         }
     }
 

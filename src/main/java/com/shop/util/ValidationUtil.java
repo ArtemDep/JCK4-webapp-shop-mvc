@@ -23,10 +23,10 @@ public final class ValidationUtil {
      */
     public static void validateUsername(String username) {
         if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException("Логин не может быть пустым");
+            throw new IllegalArgumentException("Username cannot be empty");
         }
         if (username.length() < 3 || username.length() > 50) {
-            throw new IllegalArgumentException("Логин должен содержать от 3 до 50 символов");
+            throw new IllegalArgumentException("Username must be between 3 and 50 characters");
         }
     }
 
@@ -38,7 +38,7 @@ public final class ValidationUtil {
      */
     public static void validatePassword(String password) {
         if (password == null || password.length() < 6 || password.length() > 100) {
-            throw new IllegalArgumentException("Пароль должен содержать от 6 до 100 символов");
+            throw new IllegalArgumentException("Password must be between 6 and 100 characters");
         }
     }
 
@@ -50,7 +50,7 @@ public final class ValidationUtil {
      */
     public static void validateEmail(String email) {
         if (email == null || email.length() > 100 || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("Введите корректный email");
+            throw new IllegalArgumentException("Please enter a valid email");
         }
     }
 
@@ -66,16 +66,16 @@ public final class ValidationUtil {
     public static void validateProduct(String name, String description,
                                        BigDecimal price, int quantity) {
         if (name == null || name.isBlank() || name.length() > 150) {
-            throw new IllegalArgumentException("Название товара обязательно и должно содержать не более 150 символов");
+            throw new IllegalArgumentException("Product name is required and must not exceed 150 characters");
         }
         if (description != null && description.length() > 2000) {
-            throw new IllegalArgumentException("Описание товара слишком длинное");
+            throw new IllegalArgumentException("Product description is too long");
         }
         if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Цена должна быть неотрицательной");
+            throw new IllegalArgumentException("Price must be non-negative");
         }
         if (quantity < 0) {
-            throw new IllegalArgumentException("Количество не может быть отрицательным");
+            throw new IllegalArgumentException("Quantity cannot be negative");
         }
     }
 
@@ -87,7 +87,7 @@ public final class ValidationUtil {
      */
     public static void validateQuantity(int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Количество должно быть больше нуля");
+            throw new IllegalArgumentException("Quantity must be greater than zero");
         }
     }
 }

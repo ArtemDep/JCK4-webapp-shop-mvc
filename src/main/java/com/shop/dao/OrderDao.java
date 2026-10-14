@@ -34,18 +34,19 @@ public class OrderDao {
                     statement.setLong(1, productId);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (!resultSet.next() || resultSet.getInt(1) < quantity) {
-                            throw new IllegalArgumentException("Недостаточное количество товара");
+                            throw new IllegalArgumentException("Insufficient product quantity");
                         }
                     }
                 }
 
-                String insertSql = "INSERT INTO orders(user_id, product_id, quantity, total_price) "
-                        + "VALUES(?, ?, ?, ?)";
+                String insertSql = "INSERT INTO orders(user_id, product_id, quantity, total_price, status) "
+                        + "VALUES(?, ?, ?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(insertSql)) {
                     statement.setLong(1, userId);
                     statement.setLong(2, productId);
                     statement.setInt(3, quantity);
                     statement.setBigDecimal(4, total);
+                    statement.setString(5, com.shop.model.OrderStatus.CREATED.name());
                     statement.executeUpdate();
                 }
 
@@ -90,7 +91,8 @@ public class OrderDao {
                     order.setProductName(resultSet.getString("name"));
                     order.setQuantity(resultSet.getInt("quantity"));
                     order.setTotalPrice(resultSet.getBigDecimal("total_price"));
-                    order.setStatus(resultSet.getString("status"));
+                    String statusStr = resultSet.getString("status");
+                    order.setStatus(statusStr != null ? com.shop.model.OrderStatus.valueOf(statusStr) : null);
                     order.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
                     orders.add(order);
                 }
@@ -113,24 +115,26 @@ public class OrderDao {
                 Long productId;
                 int quantity;
                 String selectSql = "SELECT product_id, quantity FROM orders "
-                        + "WHERE id = ? AND user_id = ? AND status = 'CREATED' FOR UPDATE";
+                        + "WHERE id = ? AND user_id = ? AND status = ? FOR UPDATE";
                 try (PreparedStatement statement = connection.prepareStatement(selectSql)) {
                     statement.setLong(1, orderId);
                     statement.setLong(2, userId);
+                    statement.setString(3, com.shop.model.OrderStatus.CREATED.name());
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (!resultSet.next()) {
-                            throw new IllegalArgumentException("Заказ не найден или уже отменен");
+                            throw new IllegalArgumentException("Order not found or already cancelled");
                         }
                         productId = resultSet.getLong("product_id");
                         quantity = resultSet.getInt("quantity");
                     }
                 }
 
-                String updateOrderSql = "UPDATE orders SET status = 'CANCELLED' "
+                String updateOrderSql = "UPDATE orders SET status = ? "
                         + "WHERE id = ? AND user_id = ?";
                 try (PreparedStatement statement = connection.prepareStatement(updateOrderSql)) {
-                    statement.setLong(1, orderId);
-                    statement.setLong(2, userId);
+                    statement.setString(1, com.shop.model.OrderStatus.CANCELLED.name());
+                    statement.setLong(2, orderId);
+                    statement.setLong(3, userId);
                     statement.executeUpdate();
                 }
 

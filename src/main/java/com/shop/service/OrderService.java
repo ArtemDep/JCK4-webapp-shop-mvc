@@ -49,16 +49,16 @@ public class OrderService {
      */
     public void create(long userId, long productId, int quantity) throws SQLException {
         if (userId <= 0 || productId <= 0) {
-            throw new IllegalArgumentException("Некорректные данные заказа");
+            throw new IllegalArgumentException("Invalid order data");
         }
         ValidationUtil.validateQuantity(quantity);
 
         Product product = products.findById(productId);
         if (product == null) {
-            throw new IllegalArgumentException("Товар не найден");
+            throw new IllegalArgumentException("Product not found");
         }
         if (quantity > product.getQuantity()) {
-            throw new IllegalArgumentException("Недостаточное количество товара");
+            throw new IllegalArgumentException("Insufficient product quantity");
         }
 
         BigDecimal total = product.getPrice().multiply(BigDecimal.valueOf(quantity));
@@ -86,7 +86,7 @@ public class OrderService {
      */
     public void cancel(long orderId, long userId) throws SQLException {
         if (orderId <= 0 || userId <= 0) {
-            throw new IllegalArgumentException("Некорректный идентификатор заказа");
+            throw new IllegalArgumentException("Invalid order ID");
         }
         orders.cancel(orderId, userId);
         LOGGER.info("Order cancelled: order={}, user={}", orderId, userId);

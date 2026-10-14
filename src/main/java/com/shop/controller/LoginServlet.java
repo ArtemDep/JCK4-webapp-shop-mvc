@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
         try {
             User user = userService.authenticate(username, password);
             if (user == null) {
-                request.setAttribute("error", "Неверный логин или пароль");
+                request.setAttribute("error", "Invalid username or password");
                 doGet(request, response);
                 return;
             }
@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/products");
         } catch (Exception e) {
             LOGGER.error("Login failed for user: {}", username, e);
-            request.setAttribute("error", "Не удалось выполнить вход. Попробуйте позже.");
+            request.setAttribute("error", "Login failed. Please try again later.");
             doGet(request, response);
         }
     }

@@ -28,7 +28,7 @@ public class AdminFilter implements Filter {
         if ("POST".equalsIgnoreCase(httpRequest.getMethod())) {
             HttpSession session = httpRequest.getSession(false);
             User user = session == null ? null : (User) session.getAttribute("user");
-            if (user == null || !"ADMIN".equals(user.getRole())) {
+            if (user == null || user.getRole() != com.shop.model.UserRole.ADMIN) {
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }

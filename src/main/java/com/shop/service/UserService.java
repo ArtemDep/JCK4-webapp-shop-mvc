@@ -45,7 +45,7 @@ public class UserService {
         if (username == null || username.isBlank() || password == null) {
             return null;
         }
-        User user = userDao.findByUsername(username.trim());
+        User user = userDao.findByUsername(username.strip());
         return user != null && PasswordUtil.checkPassword(password, user.getPassword())
                 ? user : null;
     }
@@ -59,14 +59,14 @@ public class UserService {
      * @throws SQLException when database access fails
      */
     public void register(String username, String password, String email) throws SQLException {
-        username = username == null ? null : username.trim();
-        email = email == null ? null : email.trim();
+        username = username == null ? null : username.strip();
+        email = email == null ? null : email.strip();
         ValidationUtil.validateUsername(username);
         ValidationUtil.validatePassword(password);
         ValidationUtil.validateEmail(email);
 
         if (userDao.findByUsername(username) != null) {
-            throw new IllegalArgumentException("Пользователь уже существует");
+            throw new IllegalArgumentException("User already exists");
         }
 
         userDao.create(new User(username, PasswordUtil.hashPassword(password), email));
@@ -81,7 +81,7 @@ public class UserService {
      * @throws SQLException when database access fails
      */
     public void updateEmail(long userId, String email) throws SQLException {
-        email = email == null ? null : email.trim();
+        email = email == null ? null : email.strip();
         ValidationUtil.validateEmail(email);
         userDao.updateEmail(userId, email);
     }

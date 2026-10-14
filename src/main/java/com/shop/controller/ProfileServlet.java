@@ -31,17 +31,21 @@ public class ProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
         try {
             String email = request.getParameter("email");
             userService.updateEmail(user.getId(), email);
-            user.setEmail(email.trim());
+            user.setEmail(email.strip());
             response.sendRedirect(request.getContextPath() + "/profile");
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", e.getMessage());
             doGet(request, response);
         } catch (Exception e) {
             LOGGER.error("Profile update failed for user {}", user.getId(), e);
-            request.setAttribute("error", "Не удалось обновить профиль.");
+            request.setAttribute("error", "Failed to update profile.");
             doGet(request, response);
         }
     }

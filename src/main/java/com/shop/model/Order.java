@@ -12,7 +12,7 @@ public class Order {
     private Long userId;
     private Long productId;
     private String productName;
-    private String status;
+    private OrderStatus status;
     private int quantity;
     private BigDecimal totalPrice;
     private LocalDateTime createdAt;
@@ -29,8 +29,8 @@ public class Order {
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public BigDecimal getTotalPrice() { return totalPrice; }
     public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

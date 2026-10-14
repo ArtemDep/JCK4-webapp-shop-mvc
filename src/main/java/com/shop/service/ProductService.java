@@ -55,7 +55,7 @@ public class ProductService {
      */
     public void create(String name, String description, BigDecimal price, int quantity) throws SQLException {
         ValidationUtil.validateProduct(name, description, price, quantity);
-        productDao.create(name.trim(), description == null ? null : description.trim(), price, quantity);
+        productDao.create(name.strip(), description == null ? null : description.trim(), price, quantity);
         LOGGER.info("Product created: {}", name);
     }
 
@@ -67,7 +67,7 @@ public class ProductService {
      */
     public void delete(long id) throws SQLException {
         if (id <= 0) {
-            throw new IllegalArgumentException("Некорректный идентификатор товара");
+            throw new IllegalArgumentException("Invalid product ID");
         }
         productDao.delete(id);
         LOGGER.info("Product deleted: {}", id);

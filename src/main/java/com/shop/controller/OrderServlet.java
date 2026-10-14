@@ -30,7 +30,7 @@ public class OrderServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/orders.jsp").forward(request, response);
         } catch (Exception e) {
             LOGGER.error("Failed to load orders", e);
-            request.setAttribute("error", "Не удалось загрузить заказы.");
+            request.setAttribute("error", "Failed to load orders.");
             request.getRequestDispatcher("/WEB-INF/views/orders.jsp").forward(request, response);
         }
     }
@@ -44,16 +44,16 @@ public class OrderServlet extends HttpServlet {
             if ("create".equals(action)) {
                 orderService.create(
                         user.getId(),
-                        parseLong(request.getParameter("productId"), "Некорректный ID товара"),
-                        parseInt(request.getParameter("quantity"), "Количество должно быть целым числом")
+                        parseLong(request.getParameter("productId"), "Invalid product ID"),
+                        parseInt(request.getParameter("quantity"), "Quantity must be an integer")
                 );
             } else if ("cancel".equals(action)) {
                 orderService.cancel(
-                        parseLong(request.getParameter("id"), "Некорректный ID заказа"),
+                        parseLong(request.getParameter("id"), "Invalid order ID"),
                         user.getId()
                 );
             } else {
-                throw new IllegalArgumentException("Неизвестная операция");
+                throw new IllegalArgumentException("Unknown operation");
             }
             response.sendRedirect(request.getContextPath() + "/orders");
         } catch (IllegalArgumentException e) {
@@ -61,13 +61,17 @@ public class OrderServlet extends HttpServlet {
             doGet(request, response);
         } catch (Exception e) {
             LOGGER.error("Order operation failed for user {}", user.getId(), e);
-            request.setAttribute("error", "Операция с заказом не выполнена.");
+            request.setAttribute("error", "Order operation failed.");
             doGet(request, response);
         }
     }
 
     private User currentUser(HttpServletRequest request) {
-        return (User) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            throw new IllegalStateException("User not authenticated");
+        }
+        return user;
     }
 
     private long parseLong(String value, String message) {
